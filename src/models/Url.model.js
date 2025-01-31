@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 
+import validator from "validator";
+
 const shortUrlSchema = new mongoose.Schema({
   longUrl: {
     type: String,
