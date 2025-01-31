@@ -11,7 +11,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 app.use(helmet());
-app.use(morgan("combined", { stream: logger.stream }));
+app.use(morgan("dev", { stream: process.stdout }));
 
 app.use("/api", routes);
 
