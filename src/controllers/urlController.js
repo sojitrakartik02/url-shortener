@@ -3,7 +3,6 @@ import Click from "../models/Click.model.js";
 import redisClient from "../config/redis.js";
 import { parseUserAgent, getGeoFromIP } from "../utils/helpers.js";
 import { v4 as uuidv4 } from "uuid";
-import jwt from "jsonwebtoken";
 import validator from "validator";
 
 export const createShortUrl = async (req, res) => {
@@ -15,7 +14,6 @@ export const createShortUrl = async (req, res) => {
       return res.status(400).json({ error: "Invalid URL" });
     }
 
-    // Check for existing alias
     if (customAlias) {
       const exists = await ShortUrl.findOne({ alias: customAlias });
       if (exists)
@@ -27,7 +25,6 @@ export const createShortUrl = async (req, res) => {
       user: req.user.id,
       topic,
     });
-    await redisClient.setEx(shortUrl.alias, 3600, longUrl);
 
     res.status(201).json({
       shortUrl: `${process.env.BASE_URL}/${shortUrl.alias}`,
@@ -42,18 +39,20 @@ export const redirectUrl = async (req, res) => {
   try {
     console.log(req.params.alias);
 
-    const cachedUrl = await redisClient.get(req.params.alias);
-    if (cachedUrl) return res.redirect(cachedUrl);
-
     const urlDoc = await ShortUrl.findOne({ alias: req.params.alias });
-    console.log("urlDoc", urlDoc);
     if (!urlDoc) return res.status(404).json({ error: "URL not found" });
-    console.log("Redirecting to:", urlDoc.longUrl);
 
-    await redisClient.setEx(req.params.alias, 3600, urlDoc.longUrl);
+    const cachedUrl = await redisClient.get(req.params.alias);
+    if (cachedUrl) {
+      console.log("cachedUrl", cachedUrl);
+      return res.redirect(cachedUrl);
+    }
 
     const userAgent = parseUserAgent(req.headers["user-agent"]);
     const geo = await getGeoFromIP(req.ip);
+    console.log(
+      `redirectUrl: ${JSON.stringify(userAgent)} and geo ${JSON.stringify(geo)}`
+    );
 
     await Click.create({
       shortUrl: urlDoc._id,
@@ -66,7 +65,11 @@ export const redirectUrl = async (req, res) => {
       city: geo.city,
       userHash: `${req.ip}-${req.headers["user-agent"]}`.substring(0, 64),
     });
+    console.log("Click data stored");
 
+    await redisClient.setEx(req.params.alias, 3600, urlDoc.longUrl);
+
+    console.log("Redirecting to:", urlDoc.longUrl);
     res.redirect(urlDoc.longUrl);
   } catch (error) {
     res.status(500).json({ error: "Server error" });
