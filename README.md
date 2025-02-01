@@ -126,17 +126,48 @@ curl -v https://url-shortener-ijzt.onrender.com/api/auth/google
     "totalClicks": 1,
     "uniqueUsers": 1,
     "clicksByDate": [
-      { "date": "2025-01-26", "clicks": 0 },
-      { "date": "2025-01-27", "clicks": 0 },
-      { "date": "2025-01-28", "clicks": 0 },
-      { "date": "2025-01-29", "clicks": 0 },
-      { "date": "2025-01-30", "clicks": 0 },
-      { "date": "2025-01-31", "clicks": 0 },
-      { "date": "2025-02-01", "clicks": 1 }
+      {
+        "date": "2025-01-26",
+        "clicks": 0
+      },
+      {
+        "date": "2025-01-27",
+        "clicks": 0
+      },
+      {
+        "date": "2025-01-28",
+        "clicks": 0
+      },
+      {
+        "date": "2025-01-29",
+        "clicks": 0
+      },
+      {
+        "date": "2025-01-30",
+        "clicks": 0
+      },
+      {
+        "date": "2025-01-31",
+        "clicks": 0
+      },
+      {
+        "date": "2025-02-01",
+        "clicks": 1
+      }
     ],
-    "osType": [{ "osName": "Other", "uniqueClicks": 1, "uniqueUsers": 1 }],
+    "osType": [
+      {
+        "osName": "Other",
+        "uniqueClicks": 1,
+        "uniqueUsers": 1
+      }
+    ],
     "deviceType": [
-      { "deviceName": "Desktop", "uniqueClicks": 1, "uniqueUsers": 1 }
+      {
+        "deviceName": "Desktop",
+        "uniqueClicks": 1,
+        "uniqueUsers": 1
+      }
     ]
   }
   ```
@@ -145,9 +176,113 @@ curl -v https://url-shortener-ijzt.onrender.com/api/auth/google
 
   - `GET /api/analytics/topic/{topic}`: Retrieves analytics for all short URLs grouped under a specific topic.
 
+  - **Response**:
+
+  ```json
+  {
+    "totalClicks": 2,
+    "uniqueUsers": 2,
+    "clicksByDate": [
+      {
+        "date": "2025-01-26",
+        "clicks": 0
+      },
+      {
+        "date": "2025-01-27",
+        "clicks": 0
+      },
+      {
+        "date": "2025-01-28",
+        "clicks": 0
+      },
+      {
+        "date": "2025-01-29",
+        "clicks": 0
+      },
+      {
+        "date": "2025-01-30",
+        "clicks": 0
+      },
+      {
+        "date": "2025-01-31",
+        "clicks": 0
+      },
+      {
+        "date": "2025-02-01",
+        "clicks": 2
+      }
+    ],
+    "urls": [
+      {
+        "shortUrl": "http://localhost:3000/mylink",
+        "totalClicks": 2,
+        "uniqueUsers": 2
+      }
+    ]
+  }
+  ```
+
   **Get Overall Analytics**
 
   - `GET /api/analytics/overall`: Retrieves overall analytics for all short URLs created by the authenticated user.
+  - **Response**:
+
+  ```json
+  {
+    "totalUrls": 21,
+    "totalClicks": 8,
+    "uniqueUsers": 2,
+    "clicksByDate": [
+      {
+        "date": "2025-01-26",
+        "clicks": 0
+      },
+      {
+        "date": "2025-01-27",
+        "clicks": 0
+      },
+      {
+        "date": "2025-01-28",
+        "clicks": 0
+      },
+      {
+        "date": "2025-01-29",
+        "clicks": 0
+      },
+      {
+        "date": "2025-01-30",
+        "clicks": 0
+      },
+      {
+        "date": "2025-01-31",
+        "clicks": 0
+      },
+      {
+        "date": "2025-02-01",
+        "clicks": 8
+      }
+    ],
+    "osType": [
+      {
+        "osName": "Windows",
+        "uniqueClicks": 1,
+        "uniqueUsers": 1
+      },
+      {
+        "osName": "Other",
+        "uniqueClicks": 1,
+        "uniqueUsers": 1
+      }
+    ],
+    "deviceType": [
+      {
+        "deviceName": "Desktop",
+        "uniqueClicks": 2,
+        "uniqueUsers": 2
+      }
+    ]
+  }
+  ```
 
 ### Security
 
