@@ -38,7 +38,7 @@ This is an **Advanced URL Shortener API** designed for creating short URLs with 
 
 # Server
 
-PORT=3000
+PORT=
 BASE_URL=<Your Base Url>
 CLIENT_URL=<Your Client Url>
 
@@ -56,8 +56,9 @@ JWT_SECRET=<Your Jwt Secret>
 
 # Google OAuth
 
-GOOGLE_CLIENT_ID=<Your Google Client ID>
-GOOGLE_CLIENT_SECRET=<Your Google Client Secret>
+-GOOGLE_CLIENT_ID=<Your Google Client ID>
+
+-GOOGLE_CLIENT_SECRET=<Your Google Client Secret>
 
 # Optional GeoIP (if using a paid service)
 
