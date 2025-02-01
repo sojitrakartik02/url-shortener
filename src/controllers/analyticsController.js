@@ -19,8 +19,6 @@ export const getAnalytics = async (req, res) => {
     }
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-    console.log("Seven days ago:", sevenDaysAgo);
-    console.log("Click data:", await Click.find({ shortUrl: url._id }));
 
     const analytics = await Click.aggregate([
       {
@@ -66,8 +64,6 @@ export const getAnalytics = async (req, res) => {
       },
     ]);
 
-    console.log("Click data  filter:", analytics);
-
     const result = {
       totalClicks: analytics[0].totalClicks[0]?.count || 0,
       uniqueUsers: analytics[0].uniqueUsers[0]?.count || 0,
@@ -102,8 +98,6 @@ export const getTopicAnalytics = async (req, res) => {
       console.log("cachedData", cachedData);
       return res.json(JSON.parse(cachedData));
     }
-    console.log("User ID:", req.user.id);
-    console.log("Requested Topic:", topic);
 
     const urls = await Short.find({ topic, user: req.user.id })
       .select("_id")
@@ -112,8 +106,6 @@ export const getTopicAnalytics = async (req, res) => {
     const urlIds = urls.map((url) => url._id);
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-
-    console.log("Seven days ago:", sevenDaysAgo);
 
     const analytics = await Click.aggregate([
       {
@@ -154,8 +146,6 @@ export const getTopicAnalytics = async (req, res) => {
       _id: { $in: analytics[0].urlStats.map((stat) => stat._id) },
     }).lean();
 
-    console.log("urlDetails", urlDetails);
-
     const result = {
       totalClicks: analytics[0].totalClicks[0]?.count || 0,
       uniqueUsers: analytics[0].uniqueUsers[0]?.count || 0,
@@ -170,8 +160,6 @@ export const getTopicAnalytics = async (req, res) => {
             ?.uniqueUsers.length || 0,
       })),
     };
-
-    console.log("result", result);
 
     await redisClient.setEx(cacheKey, 300, JSON.stringify(result));
 
@@ -190,7 +178,7 @@ export const getOverallAnalytics = async (req, res) => {
       return res.json(JSON.parse(cachedData));
     }
     const urls = await Short.find({ user: req.user.id }).select("_id").lean();
-    console.log("urls", urls);
+
     const urlIds = urls.map((url) => url._id);
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
