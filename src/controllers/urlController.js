@@ -13,22 +13,25 @@ export const createShortUrl = async (req, res) => {
     if (!validator.isURL(longUrl)) {
       return res.status(400).json({ error: "Invalid URL" });
     }
+    const alias = customAlias || uuidv4().slice(0, 8);
 
     if (customAlias) {
       const exists = await ShortUrl.findOne({ alias: customAlias });
       if (exists)
         return res.status(400).json({ error: "Alias already exists" });
     }
+    const urlshort = `${process.env.BASE_URL}/${alias}`;
     const shortUrl = await ShortUrl.create({
       longUrl,
-      alias: customAlias || uuidv4().slice(0, 8),
+      shortUrl: urlshort,
+      alias,
       user: req.user.id,
       topic,
     });
 
     res.status(201).json({
-      shortUrl: `${process.env.BASE_URL}/${shortUrl.alias}`,
-      createdAt: shortUrl.createdAt,
+      message: "Success",
+      data: shortUrl,
     });
   } catch (error) {
     res.status(400).json({ error: error.message });

@@ -11,6 +11,11 @@ const shortUrlSchema = new mongoose.Schema({
       message: "Invalid URL format",
     },
   },
+  shortUrl: {
+    type: String,
+    required: true,
+    unique: true,
+  },
   alias: {
     type: String,
     required: true,
