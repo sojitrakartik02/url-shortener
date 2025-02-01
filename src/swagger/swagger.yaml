@@ -1,0 +1,277 @@
+
+---
+
+### Swagger Documentation (swagger.yaml):
+
+```yaml
+openapi: 3.0.0
+info:
+  title: Advanced URL Shortener API
+  description: An API for shortening URLs with analytics, custom aliases, and Google Sign-In authentication.
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:3000/api'
+    description: Local development server
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+paths:
+  /auth/google:
+    get:
+      summary: Google OAuth authentication
+      operationId: googleAuth
+      responses:
+        302:
+          description: Redirect to Google login
+
+  /auth/google/callback:
+    get:
+      summary: Google OAuth callback
+      operationId: googleCallback
+      responses:
+        200:
+          description: User logged in successfully
+
+  /url/shorten:
+    post:
+      summary: Create a new short URL
+      operationId: createShortUrl
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: Request body to create a new shortened URL
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                longUrl:
+                  type: string
+                  example: 'The original long URL'
+                customAlias:
+                  type: string
+                  example: 'my-short-url'
+                  description: "Optional custom alias for the short URL"
+                topic:
+                  type: string
+                  example: 'Category for grouping the short URL'
+      responses:
+        200:
+          description: Short URL created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  shortUrl:
+                    type: string
+                    example: 'The generated short URL'
+                  createdAt:
+                    type: string
+                    format: date-time
+                    example: 'Creation timestamp'
+        '400':
+          description: "Bad request"
+        '401':
+          description: "Access denied"
+
+  /url/{alias}:
+    get:
+      summary: "Redirect to original URL"
+      description: "Redirect the user to the original long URL based on the alias."
+      operationId: "redirectUrl"
+      parameters:
+        - in: path
+          name: alias
+          required: true
+          schema:
+            type: string
+          description: "The alias of the short URL."
+      responses:
+        '302':
+          description: "Redirect successful"
+        '404':
+          description: "Short URL not found"
+  /analytics/{alias}:
+    get:
+      summary: "Get analytics for a short URL"
+      description: "Retrieve analytics for a specific short URL."
+      operationId: "getAnalytics"
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: alias
+          required: true
+          schema:
+            type: string
+          description: "The alias of the short URL."
+      responses:
+        '200':
+          description: "Analytics retrieved successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  totalClicks:
+                    type: integer
+                  uniqueUsers:
+                    type: integer
+                  clicksByDate:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        date:
+                          type: string
+                          format: date
+                        clickCount:
+                          type: integer
+                  osType:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        osName:
+                          type: string
+                        uniqueClicks:
+                          type: integer
+                        uniqueUsers:
+                          type: integer
+                  deviceType:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        deviceName:
+                          type: string
+                        uniqueClicks:
+                          type: integer
+                        uniqueUsers:
+                          type: integer
+        '400':
+          description: "Bad request"
+        '404':
+          description: "Short URL not found"
+        '401':
+          description: "Unauthorized"
+
+  /analytics/topic/{topic}:
+    get:
+      summary: "Get analytics for a specific topic"
+      description: "Retrieve analytics for all short URLs under a specific topic."
+      operationId: "getTopicAnalytics"
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: topic
+          required: true
+          schema:
+            type: string
+          description: "The topic of the short URLs."
+      responses:
+        '200':
+          description: "Topic analytics retrieved successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  totalClicks:
+                    type: integer
+                  uniqueUsers:
+                    type: integer
+                  clicksByDate:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        date:
+                          type: string
+                          format: date
+                        clickCount:
+                          type: integer
+                  urls:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        shortUrl:
+                          type: string
+                        totalClicks:
+                          type: integer
+                        uniqueUsers:
+                          type: integer
+        '400':
+          description: "Bad request"
+        '404':
+          description: "Topic not found"
+        '401':
+          description: "Unauthorized"
+
+  /analytics/overall:
+    get:
+      summary: "Get overall analytics"
+      description: "Retrieve overall analytics for all short URLs created by the authenticated user."
+      operationId: "getOverallAnalytics"
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: "Overall analytics retrieved successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  totalUrls:
+                    type: integer
+                  totalClicks:
+                    type: integer
+                  uniqueUsers:
+                    type: integer
+                  clicksByDate:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        date:
+                          type: string
+                          format: date
+                        clickCount:
+                          type: integer
+                  osType:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        osName:
+                          type: string
+                        uniqueClicks:
+                          type: integer
+                        uniqueUsers:
+                          type: integer
+                  deviceType:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        deviceName:
+                          type: string
+                        uniqueClicks:
+                          type: integer
+                        uniqueUsers:
+                          type: integer
+        '400':
+          description: "Bad request"
+        '401':
+          description: "Unauthorized"
+security:
+  - BearerAuth: []

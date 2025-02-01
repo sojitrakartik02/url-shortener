@@ -4,6 +4,19 @@ import jwt from "jsonwebtoken";
 import "dotenv/config";
 import User from "../models/user.model.js";
 
+passport.serializeUser((user, done) => {
+  done(null, user.id);
+});
+
+passport.deserializeUser(async (id, done) => {
+  try {
+    const user = await User.findById(id);
+    done(null, user);
+  } catch (error) {
+    done(error, null);
+  }
+});
+
 export const googleAuthMiddleware = passport.use(
   new GoogleStrategy(
     {
@@ -34,11 +47,16 @@ export const googleAuthMiddleware = passport.use(
 );
 
 export const authenticateJWT = (req, res, next) => {
-  const token = req.header("Authorization")?.replace("Bearer ", "");
+  // const token = req.header("Authorization")?.replace("Bearer ", "");
+  const authHeader = req.headers.authorization || req.header("Authorization");
+  const token = authHeader?.replace(/^Bearer\s+/i, ""); // Case-insensitive regex
+
+  console.log("token", token);
   if (!token) return res.status(401).json({ error: "Access denied" });
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded;
+    console.log("req.user", req.user);
     next();
   } catch (err) {
     res.status(401).json({ error: "Invalid token" });
