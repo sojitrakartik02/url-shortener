@@ -21,7 +21,7 @@ export const googleCallback = (req, res) => {
     console.log("token", token);
     res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: true,
     });
 
     res.redirect(`${process.env.CLIENT_URL}`);

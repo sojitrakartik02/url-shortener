@@ -85,7 +85,4 @@ router.get("/:alias", redirectUrl);
  */
 router.post("/shorten", authenticateJWT, createUrlLimiter, createShortUrl);
 
-// router.get("/:alias", redirectUrl);
-// router.post("/shorten", authenticateJWT, createUrlLimiter, createShortUrl);
-
 export default router;

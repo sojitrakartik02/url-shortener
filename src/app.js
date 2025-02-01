@@ -7,6 +7,7 @@ import { errorHandler, notFound } from "./middlewares/errorHandler.js";
 import logger from "./utils/logger.js";
 import swaggerConfig from "../swaggerConfig.js";
 const { swaggerUi, swaggerSpec } = swaggerConfig;
+import cookieParser from "cookie-parser";
 
 const app = express();
 
@@ -19,7 +20,7 @@ app.use(
   })
 );
 app.use(helmet());
-// app.use(morgan("dev", { stream: process.stdout }));
+app.use(cookieParser());
 app.use(
   morgan("combined", {
     stream: { write: (message) => logger.info(message.trim()) },

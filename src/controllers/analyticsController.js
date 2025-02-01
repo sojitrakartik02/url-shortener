@@ -6,7 +6,6 @@ import redisClient from "../config/redis.js";
 export const getAnalytics = async (req, res) => {
   try {
     const { alias } = req.params;
-    console.log("getAnalytics function -> alias", alias);
     const cacheKey = `analytics:${req.user.id}:${alias}`;
     const cachedData = await redisClient.get(cacheKey);
     if (cachedData) {
@@ -95,7 +94,6 @@ export const getTopicAnalytics = async (req, res) => {
     const cacheKey = `analytics:${req.user._id}:topic:${topic}`;
     const cachedData = await redisClient.get(cacheKey);
     if (cachedData) {
-      console.log("cachedData", cachedData);
       return res.json(JSON.parse(cachedData));
     }
 
@@ -171,7 +169,6 @@ export const getTopicAnalytics = async (req, res) => {
 
 export const getOverallAnalytics = async (req, res) => {
   try {
-    console.log("getOverallAnalytics");
     const cacheKey = `analytics:${req.user._id}:overall`;
     const cachedData = await redisClient.get(cacheKey);
     if (cachedData) {

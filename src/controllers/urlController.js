@@ -7,9 +7,8 @@ import validator from "validator";
 
 export const createShortUrl = async (req, res) => {
   try {
-    console.log("req.body", req.body);
     const { longUrl, customAlias, topic } = req.body;
-    console.log("req.user", req.user);
+
     if (!validator.isURL(longUrl)) {
       return res.status(400).json({ error: "Invalid URL" });
     }
@@ -40,22 +39,16 @@ export const createShortUrl = async (req, res) => {
 
 export const redirectUrl = async (req, res) => {
   try {
-    console.log(req.params.alias);
-
     const urlDoc = await ShortUrl.findOne({ alias: req.params.alias });
     if (!urlDoc) return res.status(404).json({ error: "URL not found" });
 
     const cachedUrl = await redisClient.get(req.params.alias);
     if (cachedUrl) {
-      console.log("cachedUrl", cachedUrl);
       return res.redirect(cachedUrl);
     }
 
     const userAgent = parseUserAgent(req.headers["user-agent"]);
     const geo = await getGeoFromIP(req.ip);
-    console.log(
-      `redirectUrl: ${JSON.stringify(userAgent)} and geo ${JSON.stringify(geo)}`
-    );
 
     await Click.create({
       shortUrl: urlDoc._id,
@@ -68,11 +61,9 @@ export const redirectUrl = async (req, res) => {
       city: geo.city,
       userHash: `${req.ip}-${req.headers["user-agent"]}`.substring(0, 64),
     });
-    console.log("Click data stored");
 
     await redisClient.setEx(req.params.alias, 3600, urlDoc.longUrl);
 
-    console.log("Redirecting to:", urlDoc.longUrl);
     res.redirect(urlDoc.longUrl);
   } catch (error) {
     res.status(500).json({ error: "Server error" });
