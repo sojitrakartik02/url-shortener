@@ -70,13 +70,13 @@ GEOAPI_KEY=<Your GeoApi Key>
 
 **Google OAuth Authentication**
 
-- `GET /api/auth/google`: Initiates Google Sign-In.
-- `GET /api/auth/google/callback`: Handles the Google Sign-In callback.
+- `GET https://url-shortener-ijzt.onrender.com/api/auth/google`: Initiates Google Sign-In.
+- `GET https://url-shortener-ijzt.onrender.com/api/auth/google`: Handles the Google Sign-In callback.
 
-**Important**: When you access the `GET /api/auth/google` endpoint, it will return a response with a redirect url(like this < Location: here is url),You need to visit this URL to log in. After successfully logging in with Google, Google will redirect you to a callback URL (e.g., `http://localhost:3000/api/auth/google/callback`). You can use `curl` to check the response:
+**Important**: When you access the `GET https://url-shortener-ijzt.onrender.com/api/auth/google` endpoint, After successfully logging in with Google, Google will redirect you to a callback URL (e.g., `https://url-shortener-ijzt.onrender.com/api/auth/google/callback`). You can use `curl` to check the response:
 
 ```bash
-curl -v http://localhost:3000/api/auth/google
+curl -v https://url-shortener-ijzt.onrender.com/api/auth/google
 ```
 
 ### ShortUrl Endpoints
@@ -96,8 +96,17 @@ curl -v http://localhost:3000/api/auth/google
 
   ```json
   {
-    "shortUrl": "http://localhost:3000/mylink45",
-    "createdAt": "2025-02-01T06:10:52.341Z"
+    "message": "Success",
+    "data": {
+      "longUrl": "https://example.com/ajnjnjbcdede5874r545fkuygy00-987",
+      "shortUrl": "http://localhost:3000/mylink45",
+      "alias": "mylink45",
+      "user": "679d19cca73e27eb3ce575e1",
+      "topic": "marketing45",
+      "_id": "679e3b474ae9b9ff194c777e",
+      "createdAt": "2025-02-01T15:18:31.432Z",
+      "__v": 0
+    }
   }
   ```
 
