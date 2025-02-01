@@ -56,9 +56,9 @@ JWT_SECRET=<Your Jwt Secret>
 
 # Google OAuth
 
--GOOGLE_CLIENT_ID=<Your Google Client ID>
+GOOGLE_CLIENT_ID=<Your Google Client ID>
 
--GOOGLE_CLIENT_SECRET=<Your Google Client Secret>
+GOOGLE_CLIENT_SECRET=<Your Google Client Secret>
 
 # Optional GeoIP (if using a paid service)
 
