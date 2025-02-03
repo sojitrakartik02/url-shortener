@@ -13,14 +13,13 @@ const shortUrlSchema = new mongoose.Schema({
   },
   shortUrl: {
     type: String,
-    required: true,
+    required: false,
     unique: true,
   },
   alias: {
     type: String,
-    required: true,
+    required: false,
     unique: true,
-    index: true,
     validate: {
       validator: (v) => /^[\w\-]+$/.test(v),
       message: "Invalid alias format",

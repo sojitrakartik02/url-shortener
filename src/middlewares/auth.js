@@ -26,7 +26,7 @@ export const googleAuthMiddleware = passport.use(
       scope: ["profile", "email"],
     },
 
-    async (accessToken, refreshToken, profile, done) => {
+    async (req, profile, done) => {
       try {
         let user = await User.findOne({ googleId: profile.id });
 
