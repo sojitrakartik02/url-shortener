@@ -21,9 +21,6 @@ const userSchema = new mongoose.Schema(
       required: true,
     },
 
-    refreshToken: {
-      type: String,
-    },
     lastLogin: {
       type: Date,
     },
