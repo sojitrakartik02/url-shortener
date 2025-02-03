@@ -4,18 +4,18 @@ import jwt from "jsonwebtoken";
 import "dotenv/config";
 import User from "../models/user.model.js";
 
-passport.serializeUser((user, done) => {
-  done(null, user.id);
-});
+// passport.serializeUser((user, done) => {
+//   done(null, user.id);
+// });
 
-passport.deserializeUser(async (id, done) => {
-  try {
-    const user = await User.findById(id);
-    done(null, user);
-  } catch (error) {
-    done(error, null);
-  }
-});
+// passport.deserializeUser(async (id, done) => {
+//   try {
+//     const user = await User.findById(id);
+//     done(null, user);
+//   } catch (error) {
+//     done(error, null);
+//   }
+// });
 
 export const googleAuthMiddleware = passport.use(
   new GoogleStrategy(
