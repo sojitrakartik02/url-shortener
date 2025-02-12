@@ -27,6 +27,15 @@ app.use(
   })
 );
 
+// app.use(
+//   session({
+//     secret: process.env.SESSION_SECRET || "your-secret-key",
+//     resave: false,
+//     saveUninitialized: true,
+//   })
+// );
+
+
 app.use("/api", routes);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 

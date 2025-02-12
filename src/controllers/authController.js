@@ -24,6 +24,11 @@ export const googleCallback = (req, res) => {
       secure: true,
     });
 
-    res.redirect(`${process.env.CLIENT_URL}`);
+    // res.redirect(`${process.env.CLIENT_URL}`);
+    res.status(200).json({
+      message: "Logged in successfully",
+      user,
+      token: token,
+    });
   })(req, res);
 };

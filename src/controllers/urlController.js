@@ -38,14 +38,19 @@ export const createShortUrl = async (req, res) => {
 };
 
 export const redirectUrl = async (req, res) => {
+  const cacheKeyUrl = `shorturl:${req.params.alias}`;
+  const cachedUrlData = await redisClient.get(cacheKeyUrl);
+  if (cachedUrlData) {
+    console.log("redis", cacheKeyUrl);
+    return res.status(200).json({
+      message: "Long url retrieved successfully from redis cache",
+      longUrl: cachedUrlData,
+    });
+  }
+
   try {
     const urlDoc = await ShortUrl.findOne({ alias: req.params.alias });
     if (!urlDoc) return res.status(404).json({ error: "URL not found" });
-
-    const cachedUrl = await redisClient.get(req.params.alias);
-    if (cachedUrl) {
-      return res.redirect(cachedUrl);
-    }
 
     const userAgent = parseUserAgent(req.headers["user-agent"]);
     const geo = await getGeoFromIP(req.ip);
@@ -62,9 +67,12 @@ export const redirectUrl = async (req, res) => {
       userHash: `${req.ip}-${req.headers["user-agent"]}`.substring(0, 64),
     });
 
-    await redisClient.setEx(req.params.alias, 3600, urlDoc.longUrl);
-
-    res.redirect(urlDoc.longUrl);
+    await redisClient.setEx(cacheKeyUrl, 3600, urlDoc.longUrl);
+    return res.status(200).json({
+      message: "Long URL retrieved successfully",
+      longUrl: urlDoc.longUrl,
+    });
+    // res.redirect(urlDoc.longUrl);
   } catch (error) {
     res.status(500).json({ error: "Server error" });
   }
